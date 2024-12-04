@@ -300,9 +300,6 @@ INSERT INTO ALERGIAS_MENTOR (MENTOR, ALERGIA) VALUES ('987.654.321-00', 'Lactose
 INSERT INTO ALERGIAS_MENTOR (MENTOR, ALERGIA) VALUES ('987.654.321-00', 'Camarão'); -- Mentor Tânia Silva
 
 
-
-/* TUDO CERTO ATÉ AQUI!!!!!!!!!!!!!!!!*/
-
 -- Atletas com 3 ou mais alergias
 
 INSERT INTO ALERGIAS_ATLETA (ATLETA, ALERGIA) VALUES ('456.789.012-00', 'Pólen'); -- Atleta Richarlison
