@@ -144,8 +144,7 @@ def objetivos_atleta(connection):
         with connection.cursor() as cursor:
             for r in cursor.execute(sql,(input_usuario,)):
                 print(r)
-            while(input("Pressione Enter para continuar") != ''):
-                pass
+            input("Pressione Enter para continuar")
     else:
         print("Erro na consulta, a entrada não está adequada")
         input("Pressione Enter para continuar")
@@ -164,9 +163,30 @@ def atletas_mentorados(connection):
             input("Pressione Enter para continuar")
     else:
         print("Erro na consulta, a entrada não está adequada")
-        while(input("Pressione Enter para continuar") != ''):
-                pass
+        input("Pressione Enter para continuar")
 
+
+def alergias_gabriel_barbosa(connection):
+    sql = """SELECT A.NOME
+            FROM ATLETA A
+            WHERE NOT EXISTS
+            (
+                (SELECT UPPER(AL.ALERGIA)
+                FROM ATLETA A1 JOIN ALERGIAS_ATLETA AL
+                ON UPPER(A1.NOME) like 'GABRIEL BARBOSA' AND A1.PESSOA = AL.ATLETA
+                )
+                MINUS
+                (SELECT UPPER(AL1.ALERGIA)
+                FROM ALERGIAS_ATLETA AL1
+                WHERE A.PESSOA = AL1.ATLETA
+                )
+            )
+        """
+    with connection.cursor() as cursor:
+        for r in cursor.execute(sql,):
+            print(r)
+        input("Pressione Enter para continuar")
+    
 
 def input_seguro(input_usuario):
     substrings_proibidas = [",","'",";","--"]

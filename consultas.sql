@@ -1,3 +1,19 @@
+--Divisão Relacional: Seleciona todos os atletas tem as mesmas alergias que o Gabriel Barbosa
+SELECT A.NOME
+FROM ATLETA A
+WHERE NOT EXISTS
+(
+    (SELECT UPPER(AL.ALERGIA)
+    FROM ATLETA A1 JOIN ALERGIAS_ATLETA AL
+    ON UPPER(A1.NOME) like 'GABRIEL BARBOSA' AND A1.PESSOA = AL.ATLETA
+    )
+    MINUS
+    (SELECT UPPER(AL1.ALERGIA)
+    FROM ALERGIAS_ATLETA AL1
+    WHERE A.PESSOA = AL1.ATLETA
+    )
+)
+
 --Recordes detidos por atletas que possuem objetivos de desenvolvimento em progresso 
 SELECT 
     a.NOME AS ATLETA,

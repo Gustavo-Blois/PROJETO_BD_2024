@@ -12,10 +12,11 @@ def main():
                 \033[2J
                 \033[H 
                 BD ATLETAS
-                Pressione 'Q' para sair
-                Pressione 'A' para adicionar um atleta à base de dados 
-                pressione 'O' para verificar objetivos de desenvolvimento de um atleta
-                Pressione 'M' para verificar os atletas mentorados por um mentor
+                Pressione Q para sair
+                Pressione A para adicionar um atleta à base de dados 
+                pressione O para verificar objetivos de desenvolvimento de um atleta
+                Pressione M para verificar os atletas mentorados por um mentor
+                Pressione V para verificar atletas com as mesmas alergias que o Gabriel Barbosa
                 """)
             match tecla_do_usuario.upper():
                 case 'M':
@@ -24,6 +25,8 @@ def main():
                     my_oracle_db.adicionar_atleta(connection)
                 case 'O':
                     my_oracle_db.objetivos_atleta(connection)
+                case 'V':
+                    my_oracle_db.alergias_gabriel_barbosa(connection)
                 case 'Q':
                     break
                 case _:
