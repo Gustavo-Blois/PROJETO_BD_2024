@@ -2,7 +2,7 @@ import my_oracle_db
 
 def main():
 
-    connection = my_oracle_db.login() # Consulte my_oracle_db.py para mais detalhes sobre o login
+    connection = my_oracle_db.login() #Consulte my_oracle_db.py para mais detalhes sobre o login
     
     print(connection)
     tecla_do_usuario = ''
@@ -12,16 +12,19 @@ def main():
                 \033[2J
                 \033[H 
                 BD ATLETAS
-                Pressione 'q' para sair
-                Pressione 'a' para entrar na área de atletas
-                pressione 'm' para entrar na área de mentores
+                Pressione 'Q' para sair
+                Pressione 'A' para adicionar um atleta à base de dados 
+                pressione 'O' para verificar objetivos de desenvolvimento de um atleta
+                Pressione 'M' para verificar os atletas mentorados por um mentor
                 """)
-            match tecla_do_usuario:
-                case 'a':
-                    my_oracle_db.menu_atletas(connection)
-                case 'm':
-                    my_oracle_db.menu_mentores(connection)
-                case 'q':
+            match tecla_do_usuario.upper():
+                case 'M':
+                    my_oracle_db.atletas_mentorados(connection)
+                case 'A':
+                    my_oracle_db.adicionar_atleta(connection)
+                case 'O':
+                    my_oracle_db.objetivos_atleta(connection)
+                case 'Q':
                     break
                 case _:
                     pass

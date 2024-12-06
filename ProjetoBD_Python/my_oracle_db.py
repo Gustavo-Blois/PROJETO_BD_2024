@@ -13,42 +13,73 @@ def login():
         print(f"Erro ao conectar ao banco de dados: {e}")
         return None
     
-def menu_atletas(connection):
-    tecla_do_usuario = ''  
-    while(True): 
-        tecla_do_usuario = input("""
-            \033[2J
-            \033[H 
-            MENU ATLETAS
-            Pressione 'q' para sair
-            Pressione 'c' para adicionar um atleta à base de dados 
-            pressione 'o' para verificar objetivos de desenvolvimento de um atleta
-            """)
-        match tecla_do_usuario:
-            case 'c':
-                adicionar_atleta(connection)
-            case 'o':
-                objetivos_atleta(connection)
-            case 'q':
-                break
-            case _:
-                pass
 
 def adicionar_atleta(connection):
     # Solicitar informações do atleta
+    print("Digite Q em qualquer uma das questões para sair")
+
     nome_atleta = input("\033[2J\033[HQual o nome do atleta? ")
+    if nome_atleta.upper() == 'Q': return
+
     cpf_atleta = input("Qual o CPF do atleta no formato XXX.XXX.XXX-XX? ")
+    if cpf_atleta.upper() == 'Q': return
+
     data_nascimento = input("Qual a data de nascimento do atleta no formato YYYY-MM-DD? ")
+    if data_nascimento.upper() == 'Q': return
+
     clube_ou_equipe = input("A qual clube ou equipe o atleta pertence? ")
-    mentor = input("Qual o CPF do mentor do atleta? ")
+    if clube_ou_equipe.upper() == 'Q': return
+
+    mentor = input("Qual o CPF do mentor do atleta no formato XXX.XXX.XXX-XX? ")
+    if mentor.upper() == 'Q': return
+
     escolaridade = input("Qual a escolaridade do atleta? ")
+    if escolaridade.upper() == 'Q': return
+
     num_telefone = input("Qual o número de telefone do atleta no formato (XX)XXXXX-XXXX? ")
+    if num_telefone.upper() == 'Q': return
+
     pais = input("Qual o país do atleta? ")
+    if pais.upper() == 'Q': return
+
     estado = input("Qual o estado do atleta no formato XX? ")
+    if estado.upper() == 'Q': return
+
     cidade = input("Qual a cidade do atleta? ")
+    if cidade.upper() == 'Q': return
+
     logradouro = input("Qual o endereço do atleta? ")
+    if logradouro.upper() == 'Q': return
+
     numero = input("Qual o número da residência do atleta? ")
+    if numero.upper() == 'Q': return
+    
     complemento = input("Algum complemento ao endereço? ")
+    if complemento.upper() == 'Q': return
+    elif complemento == '': complemento = 'N'
+
+    try:
+        n_alergias = int(input("Quantas alergias o atleta tem? "))
+        alergias = []
+        for enesima_alergia in range(n_alergias):
+            alergia = input(f"Qual a {enesima_alergia + 1}ª alergia do atleta? ")
+            alergias.append(alergia)
+
+        print("As alergias registradas foram:", alergias)
+
+    except ValueError:
+        print("Por favor, insira um número válido para a quantidade de alergias.")
+    
+    try:
+        n_doencas = int(input("Quantas doenças o atleta tem? "))
+        doencas = []
+        for enesima_doenca in range(n_doencas):
+            doenca = input(f"Qual a {enesima_doenca + 1}ª doença do atleta? ")
+            doencas.append(doenca)
+        print("As doenças registradas foram:", doencas)
+
+    except ValueError:
+        print("Por favor, insira um número válido para a quantidade de doenças.")
     input_geral = (
         nome_atleta + cpf_atleta + data_nascimento + clube_ou_equipe + mentor +
         escolaridade + num_telefone + pais + estado + cidade + logradouro + numero + complemento
@@ -78,6 +109,19 @@ def adicionar_atleta(connection):
                 cpf_atleta, clube_ou_equipe, nome_atleta, mentor, data_nascimento,
                 escolaridade, num_telefone, pais, estado, cidade, logradouro, numero, complemento
             ])
+            
+            # Por fim, adicionar alergias e doenças
+            sql_alergias = """
+                INSERT INTO ALERGIAS_ATLETA (ATLETA,ALERGIA)
+                VALUES (:1,:2)
+            """
+            for alergia in alergias:
+                cursor.execute(sql_alergias,[cpf_atleta,alergia])
+
+            sql_doencas = """
+                INSERT INTO DOENCAS_ATLETA (ATLETA,DOENCA)
+                VALUES (:1,:2)
+            """
 
             # Confirmar transação
             connection.commit()
@@ -105,23 +149,6 @@ def objetivos_atleta(connection):
     else:
         print("Erro na consulta, a entrada não está adequada")
         input("Pressione Enter para continuar")
-
-
-def menu_mentores(connection):
-    tecla_do_usuario = ''  
-    while(True): 
-        tecla_do_usuario = input("""
-            \033[2J\033[HMENU ATLETAS
-            Pressione 'q' para sair
-            Pressione 'a' para verificar os atletas mentorados por um mentor 
-            """)
-        match tecla_do_usuario:
-            case 'a':
-                atletas_mentorados(connection)
-            case 'q':
-                break
-            case _:
-                pass
 
 def atletas_mentorados(connection):
     input_usuario = input("\033[2J\033[HQual o nome do mentor? ")
