@@ -33,11 +33,11 @@ WHERE
 
 
 
--- esportes praticados por atletas com obj de desenvolvimento concluidos
+--esportes praticados por atletas com obj de desenvolvimento concluidos
 SELECT 
-    a.NOME AS ATLETA,
     ep.NOME_DO_ESPORTE,
-    ep.CATEGORIA_DO_ESPORTE
+    ep.CATEGORIA_DO_ESPORTE,
+    COUNT(a.PESSOA) AS NUMERO_DE_ATLETAS
 FROM 
     ESPORTES_PRATICADOS ep
 JOIN 
@@ -45,7 +45,9 @@ JOIN
 JOIN 
     OBJETIVO_DE_DESENVOLVIMENTO od ON od.ATLETA = a.PESSOA
 WHERE 
-    od.STATUS = 'CONCLUIDO';
+    od.STATUS = 'CONCLUIDO'
+GROUP BY 
+    ep.NOME_DO_ESPORTE, ep.CATEGORIA_DO_ESPORTE;
 
 
 
