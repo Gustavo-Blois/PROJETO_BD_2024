@@ -11,7 +11,8 @@ def main():
             tecla_do_usuario = input("""
                 \033[2J
                 \033[H 
-                BD ATLETAS
+                BANCO DE DADOS
+                APOIO AO ATLETISMO
                 Pressione Q para sair
                 Pressione A para adicionar um atleta à base de dados 
                 pressione O para verificar objetivos de desenvolvimento de um atleta
