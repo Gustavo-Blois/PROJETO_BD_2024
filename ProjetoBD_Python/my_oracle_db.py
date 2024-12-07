@@ -1,32 +1,37 @@
-import getpass
-import oracledb
+import getpass  # Para entrada segura de senhas
+import oracledb  # Biblioteca para conectar ao Oracle Database
 
 def login():
-    un = 'adgmr'
-    cs = 'orclgrad1.icmc.usp.br/pdb_elaine.icmc.usp.br'
-    pw = getpass.getpass(f'Enter password for {un}@{cs}: ')
+    # Dados de conexão com o banco de dados
+    un = 'adgmr'  # Nome de usuário
+    cs = 'orclgrad1.icmc.usp.br/pdb_elaine.icmc.usp.br'  # DSN do banco
+    pw = getpass.getpass(f'Enter password for {un}@{cs}: ')  # Solicita a senha do usuário de forma segura
     try:
+        # Tenta estabelecer uma conexão com o banco
         connection = oracledb.connect(user=un, password=pw, dsn=cs)
         print("Conexão estabelecida com sucesso!")
-        return connection
-    except oracledb.DatabaseError as e:
+        return connection  # Retorna o objeto de conexão
+    except oracledb.DatabaseError as e:  # Captura erros de conexão
         print(f"Erro ao conectar ao banco de dados: {e}")
-        return None
+        return None  # Retorna None caso a conexão falhe
     
 
 def adicionar_atleta(connection):
-    # Solicitar informações do atleta
+    # Solicita informações do atleta
     print("Digite Q em qualquer uma das questões para sair")
 
+    # Coleta de dados do atleta
     nome_atleta = input("\033[2J\033[HQual o nome do atleta? ")
     if nome_atleta.upper() == 'Q': return
 
+    # Dados do CPF, clube, mentor, etc.
     cpf_atleta = input("Qual o CPF do atleta no formato XXX.XXX.XXX-XX? ")
     if cpf_atleta.upper() == 'Q': return
 
     data_nascimento = input("Qual a data de nascimento do atleta no formato YYYY-MM-DD? ")
     if data_nascimento.upper() == 'Q': return
 
+    # Solicita mais dados e verifica se o usuário deseja sair
     clube_ou_equipe = input("A qual clube ou equipe o atleta pertence? ")
     if clube_ou_equipe.upper() == 'Q': return
 
@@ -53,12 +58,13 @@ def adicionar_atleta(connection):
 
     numero = input("Qual o número da residência do atleta? ")
     if numero.upper() == 'Q': return
-    
+
     complemento = input("Algum complemento ao endereço? ")
     if complemento.upper() == 'Q': return
     elif complemento == '': complemento = 'N'
 
     try:
+        # Coleta de alergias
         n_alergias = int(input("Quantas alergias o atleta tem? "))
         alergias = []
         for enesima_alergia in range(n_alergias):
@@ -66,37 +72,28 @@ def adicionar_atleta(connection):
             alergias.append(alergia)
 
         print("As alergias registradas foram:", alergias)
-
     except ValueError:
         print("Por favor, insira um número válido para a quantidade de alergias.")
     
     try:
+        # Coleta de doenças
         n_doencas = int(input("Quantas doenças o atleta tem? "))
         doencas = []
         for enesima_doenca in range(n_doencas):
             doenca = input(f"Qual a {enesima_doenca + 1}ª doença do atleta? ")
             doencas.append(doenca)
         print("As doenças registradas foram:", doencas)
-
     except ValueError:
         print("Por favor, insira um número válido para a quantidade de doenças.")
-    input_geral = (
-        nome_atleta + cpf_atleta + data_nascimento + clube_ou_equipe + mentor +
-        escolaridade + num_telefone + pais + estado + cidade + logradouro + numero + complemento
-    )
-    if not input_seguro(input_geral):  # Verificar se a entrada é segura
-        print("Erro na inserção: entrada contém dados inadequados.")
-        input("Pressione Enter para continuar...")
-        return
 
-    # Inserção no banco de dados
+    # Insere os dados no banco de dados
     try:
         with connection.cursor() as cursor:
-            # Primeiro, inserir na tabela PESSOA
+            # Inserção inicial na tabela PESSOA
             sql_pessoa = "INSERT INTO PESSOA (CPF, TIPO) VALUES (:1, 'ATLETA')"
             cursor.execute(sql_pessoa, [cpf_atleta])
 
-            # Depois, inserir na tabela ATLETA
+            # Inserção dos dados do atleta na tabela ATLETA
             sql_atleta = """
                 INSERT INTO ATLETA (
                     PESSOA, CLUBE_OU_EQUIPE, NOME, MENTOR, DATA_NASC, ESCOLARIDADE,
@@ -110,89 +107,76 @@ def adicionar_atleta(connection):
                 escolaridade, num_telefone, pais, estado, cidade, logradouro, numero, complemento
             ])
             
-            # Por fim, adicionar alergias e doenças
+            # Adiciona alergias e doenças às tabelas correspondentes
             sql_alergias = """
-                INSERT INTO ALERGIAS_ATLETA (ATLETA,ALERGIA)
-                VALUES (:1,:2)
+                INSERT INTO ALERGIAS_ATLETA (ATLETA, ALERGIA) VALUES (:1, :2)
             """
             for alergia in alergias:
-                cursor.execute(sql_alergias,[cpf_atleta,alergia])
+                cursor.execute(sql_alergias, [cpf_atleta, alergia])
 
             sql_doencas = """
-                INSERT INTO DOENCAS_ATLETA (ATLETA,DOENCA)
-                VALUES (:1,:2)
+                INSERT INTO DOENCAS_ATLETA (ATLETA, DOENCA) VALUES (:1, :2)
             """
+            for doenca in doencas:
+                cursor.execute(sql_doencas, [cpf_atleta, doenca])
 
-            # Confirmar transação
+            # Confirma as alterações
             connection.commit()
 
         print("Atleta adicionado com sucesso!")
     except oracledb.DatabaseError as e:
         print(f"Erro ao inserir atleta no banco de dados: {e}")
-        connection.rollback()  # Desfazer alterações em caso de erro
+        connection.rollback()  # Desfaz alterações em caso de erro
     finally:
         input("Pressione Enter para continuar")
-
 def objetivos_atleta(connection):
+    # Solicita o nome do atleta para consulta
     input_usuario = input("\033[2J\033[HQual o nome do atleta? ")
-    if input_seguro(input_usuario):
-        sql = """SELECT A.NOME, O.NUM_OBJETIVO,O.DESCRICAO, O.STATUS
-                FROM ATLETA A
-                JOIN OBJETIVO_DE_DESENVOLVIMENTO O
-                ON UPPER(A.NOME) = UPPER(:1) AND A.PESSOA = O.ATLETA 
-                """
-        with connection.cursor() as cursor:
-            for r in cursor.execute(sql,(input_usuario,)):
-                print(r)
-            input("Pressione Enter para continuar")
-    else:
-        print("Erro na consulta, a entrada não está adequada")
-        input("Pressione Enter para continuar")
 
-def atletas_mentorados(connection):
-    input_usuario = input("\033[2J\033[HQual o nome do mentor? ")
-    if input_seguro(input_usuario):
+    if input_seguro(input_usuario):  # Verifica se a entrada é segura
+        # Consulta os objetivos de desenvolvimento do atleta no banco de dados
         sql = """
-                SELECT A.NOME, A.CLUBE_OU_EQUIPE
-                FROM MENTOR M JOIN ATLETA A
-                ON UPPER(M.NOME) = UPPER(:1) AND A.MENTOR = M.PESSOA
-                """ # TODO: COLOCAR QUERY ADEQUADA
+            SELECT A.NOME, O.NUM_OBJETIVO, O.DESCRICAO, O.STATUS
+            FROM ATLETA A
+            JOIN OBJETIVO_DE_DESENVOLVIMENTO O
+            ON UPPER(A.NOME) = UPPER(:1) AND A.PESSOA = O.ATLETA
+        """
         with connection.cursor() as cursor:
-            for r in cursor.execute(sql,(input_usuario,)):
+            # Executa a consulta e exibe os resultados
+            for r in cursor.execute(sql, (input_usuario,)):
                 print(r)
-            input("Pressione Enter para continuar")
+            input("Pressione Enter para continuar")  # Pausa para o usuário visualizar os dados
     else:
+        # Exibe mensagem de erro caso a entrada contenha caracteres não permitidos
         print("Erro na consulta, a entrada não está adequada")
         input("Pressione Enter para continuar")
+def atletas_mentorados(connection):
+    # Solicita o nome do mentor para a consulta
+    input_usuario = input("\033[2J\033[HQual o nome do mentor? ")
 
-
-def alergias_gabriel_barbosa(connection):
-    sql = """SELECT A.NOME
-            FROM ATLETA A
-            WHERE NOT EXISTS
-            (
-                (SELECT UPPER(AL.ALERGIA)
-                FROM ATLETA A1 JOIN ALERGIAS_ATLETA AL
-                ON UPPER(A1.NOME) like 'GABRIEL BARBOSA' AND A1.PESSOA = AL.ATLETA
-                )
-                MINUS
-                (SELECT UPPER(AL1.ALERGIA)
-                FROM ALERGIAS_ATLETA AL1
-                WHERE A.PESSOA = AL1.ATLETA
-                )
-            )
+    if input_seguro(input_usuario):  # Verifica se a entrada é segura
+        # Consulta os atletas mentorados pelo mentor especificado
+        sql = """
+            SELECT A.NOME, A.CLUBE_OU_EQUIPE
+            FROM MENTOR M
+            JOIN ATLETA A
+            ON UPPER(M.NOME) = UPPER(:1) AND A.MENTOR = M.PESSOA
         """
-    with connection.cursor() as cursor:
-        for r in cursor.execute(sql,):
-            print(r)
+        with connection.cursor() as cursor:
+            # Executa a consulta e exibe os resultados
+            for r in cursor.execute(sql, (input_usuario,)):
+                print(r)
+            input("Pressione Enter para continuar")  # Pausa para o usuário visualizar os dados
+    else:
+        # Exibe mensagem de erro caso a entrada contenha caracteres não permitidos
+        print("Erro na consulta, a entrada não está adequada")
         input("Pressione Enter para continuar")
-    
-
+        
 def input_seguro(input_usuario):
-    substrings_proibidas = [",","'",";","--"]
+    # Define uma lista de substrings proibidas para evitar injeções SQL
+    substrings_proibidas = [",", "'", ";", "--","="]
 
     for substring in substrings_proibidas:
-        if substring in input_usuario:
-            return False
-    return True
-
+        if substring in input_usuario:  # Verifica se a entrada contém qualquer substring proibida
+            return False  # Retorna False se encontrar alguma substring proibida
+    return True  # Retorna True se a entrada for considerada segura
