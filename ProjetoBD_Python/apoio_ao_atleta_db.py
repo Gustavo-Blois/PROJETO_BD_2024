@@ -171,6 +171,36 @@ def atletas_mentorados(connection):
         # Exibe mensagem de erro caso a entrada contenha caracteres não permitidos
         print("Erro na consulta, a entrada não está adequada")
         input("Pressione Enter para continuar")
+
+def alergias_semelhantes(connection):
+    # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
+    input_usuario = input("\033[2J\033[H Qual o nome do atleta do qual deseja verificar se outros atletas possuem todas as alergias que ele tem? ")
+    sql = """
+        SELECT A.NOME
+        FROM ATLETA A
+        WHERE NOT EXISTS
+        (
+            -- Subconsulta para verificar as alergias do atleta selecionado pelo usuário
+            (SELECT UPPER(AL.ALERGIA)
+             FROM ATLETA A1
+             JOIN ALERGIAS_ATLETA AL
+             ON UPPER(A1.NOME) = UPPER(:1) AND A1.PESSOA = AL.ATLETA
+            )
+            MINUS
+            -- Subconsulta para verificar as alergias do atleta atual
+            (SELECT UPPER(AL1.ALERGIA)
+             FROM ALERGIAS_ATLETA AL1
+             WHERE A.PESSOA = AL1.ATLETA
+            )
+        )
+    """
+    if input_seguro(input_usuario):
+        with connection.cursor() as cursor:
+            # Executa a consulta e exibe os resultados
+            for r in cursor.execute(sql,[input_usuario]):
+                print(r)
+            input("Pressione Enter para continuar")  # Pausa para o usuário visualizar os dados
+
         
 def input_seguro(input_usuario):
     # Define uma lista de substrings proibidas para evitar injeções SQL
