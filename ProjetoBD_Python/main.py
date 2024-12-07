@@ -9,8 +9,8 @@ def main():
     if connection:  # Verifica se a conexão foi estabelecida com sucesso
         while(connection):  # Loop principal do programa enquanto a conexão existir
             tecla_do_usuario = input("""
-                \033[2J  # Limpa a tela do terminal
-                \033[H   # Move o cursor para o topo
+                \033[2J
+                \033[H
                 BANCO DE DADOS
                 APOIO AO ATLETISMO
                 Pressione Q para sair
@@ -35,7 +35,7 @@ def main():
         connection.cursor().close()  # Fecha o cursor do banco de dados
         connection.close()  # Fecha a conexão com o banco
 
-        print("\033[2J\033[H")  # Limpa a tela do terminal
+        print("\033[2J\033[H")  # Limpa a tela do terminal e move o cursor para o inicio da tela
     else:
         print("Não foi possível se conectar à base de dados")  # Mensagem de erro caso a conexão falhe
     
