@@ -17,7 +17,7 @@ def main():
                 Pressione A para adicionar um atleta à base de dados 
                 pressione O para verificar objetivos de desenvolvimento de um atleta
                 Pressione M para verificar os atletas mentorados por um mentor
-                Pressione V para verificar atletas com as mesmas alergias que o Gabriel Barbosa
+                Pressione V para verificar atletas com todas as alergias que um atleta tem
                 """)
             match tecla_do_usuario.upper():  # Avalia a entrada do usuário
                 case 'M':
@@ -27,7 +27,7 @@ def main():
                 case 'O':
                     apoio_ao_atleta_db.py.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
                 case 'V':
-                    apoio_ao_atleta_db.py.alergias_gabriel_barbosa(connection)  # Verifica atletas com alergias similares
+                    apoio_ao_atleta_db.py.todas_as_alergias(connection)  # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
                 case 'Q':
                     break  # Sai do loop
                 case _:  # Caso padrão para entradas inválidas
