@@ -1,4 +1,4 @@
-import apoio_ao_atleta_db.py  # Importa o módulo que contém as funções relacionadas ao banco de dados
+import apoio_ao_atleta_db  # Importa o módulo que contém as funções relacionadas ao banco de dados
 
 def main():
     # Estabelece conexão com o banco de dados
