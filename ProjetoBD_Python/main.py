@@ -2,7 +2,7 @@ import apoio_ao_atleta_db.py  # Importa o módulo que contém as funções relac
 
 def main():
     # Estabelece conexão com o banco de dados
-    connection = apoio_ao_atleta_db.py.login()  # Consulte apoio_ao_atleta_db.py.py para mais detalhes sobre o login
+    connection = apoio_ao_atleta_db.login()  # Consulte apoio_ao_atleta_db.py.py para mais detalhes sobre o login
     
     print(connection)
     tecla_do_usuario = ''  # Inicializa a variável que armazena a escolha do usuário
