@@ -1,16 +1,16 @@
-import my_oracle_db
+import my_oracle_db  # Importa o módulo que contém as funções relacionadas ao banco de dados
 
 def main():
-
-    connection = my_oracle_db.login() #Consulte my_oracle_db.py para mais detalhes sobre o login
+    # Estabelece conexão com o banco de dados
+    connection = my_oracle_db.login()  # Consulte my_oracle_db.py para mais detalhes sobre o login
     
     print(connection)
-    tecla_do_usuario = ''
-    if connection:
-        while(connection): 
+    tecla_do_usuario = ''  # Inicializa a variável que armazena a escolha do usuário
+    if connection:  # Verifica se a conexão foi estabelecida com sucesso
+        while(connection):  # Loop principal do programa enquanto a conexão existir
             tecla_do_usuario = input("""
-                \033[2J
-                \033[H 
+                \033[2J  # Limpa a tela do terminal
+                \033[H   # Move o cursor para o topo
                 BANCO DE DADOS
                 APOIO AO ATLETISMO
                 Pressione Q para sair
@@ -19,29 +19,26 @@ def main():
                 Pressione M para verificar os atletas mentorados por um mentor
                 Pressione V para verificar atletas com as mesmas alergias que o Gabriel Barbosa
                 """)
-            match tecla_do_usuario.upper():
+            match tecla_do_usuario.upper():  # Avalia a entrada do usuário
                 case 'M':
-                    my_oracle_db.atletas_mentorados(connection)
+                    my_oracle_db.atletas_mentorados(connection)  # Exibe atletas mentorados
                 case 'A':
-                    my_oracle_db.adicionar_atleta(connection)
+                    my_oracle_db.adicionar_atleta(connection)  # Adiciona um atleta
                 case 'O':
-                    my_oracle_db.objetivos_atleta(connection)
+                    my_oracle_db.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
                 case 'V':
-                    my_oracle_db.alergias_gabriel_barbosa(connection)
+                    my_oracle_db.alergias_gabriel_barbosa(connection)  # Verifica atletas com alergias similares
                 case 'Q':
-                    break
-                case _:
+                    break  # Sai do loop
+                case _:  # Caso padrão para entradas inválidas
                     pass
-        connection.cursor().close()
-        connection.close()
+        connection.cursor().close()  # Fecha o cursor do banco de dados
+        connection.close()  # Fecha a conexão com o banco
 
-        print("\033[2J\033[H") #Apaga a tela e retorna ao terminal
+        print("\033[2J\033[H")  # Limpa a tela do terminal
     else:
-        print("Não foi possível se conectar à base de dados")
+        print("Não foi possível se conectar à base de dados")  # Mensagem de erro caso a conexão falhe
     
 
 if __name__ == '__main__':
-    main()
-    
-
-
+    main()  # Inicia o programa principal
