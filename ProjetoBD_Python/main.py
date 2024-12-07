@@ -1,8 +1,8 @@
-import my_oracle_db  # Importa o módulo que contém as funções relacionadas ao banco de dados
+import apoio_ao_atleta_db.py  # Importa o módulo que contém as funções relacionadas ao banco de dados
 
 def main():
     # Estabelece conexão com o banco de dados
-    connection = my_oracle_db.login()  # Consulte my_oracle_db.py para mais detalhes sobre o login
+    connection = apoio_ao_atleta_db.py.login()  # Consulte apoio_ao_atleta_db.py.py para mais detalhes sobre o login
     
     print(connection)
     tecla_do_usuario = ''  # Inicializa a variável que armazena a escolha do usuário
@@ -21,13 +21,13 @@ def main():
                 """)
             match tecla_do_usuario.upper():  # Avalia a entrada do usuário
                 case 'M':
-                    my_oracle_db.atletas_mentorados(connection)  # Exibe atletas mentorados
+                    apoio_ao_atleta_db.py.atletas_mentorados(connection)  # Exibe atletas mentorados
                 case 'A':
-                    my_oracle_db.adicionar_atleta(connection)  # Adiciona um atleta
+                    apoio_ao_atleta_db.py.adicionar_atleta(connection)  # Adiciona um atleta
                 case 'O':
-                    my_oracle_db.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
+                    apoio_ao_atleta_db.py.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
                 case 'V':
-                    my_oracle_db.alergias_gabriel_barbosa(connection)  # Verifica atletas com alergias similares
+                    apoio_ao_atleta_db.py.alergias_gabriel_barbosa(connection)  # Verifica atletas com alergias similares
                 case 'Q':
                     break  # Sai do loop
                 case _:  # Caso padrão para entradas inválidas
