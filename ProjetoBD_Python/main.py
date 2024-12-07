@@ -21,13 +21,13 @@ def main():
                 """)
             match tecla_do_usuario.upper():  # Avalia a entrada do usuário
                 case 'M':
-                    apoio_ao_atleta_db.py.atletas_mentorados(connection)  # Exibe atletas mentorados
+                    apoio_ao_atleta_db.atletas_mentorados(connection)  # Exibe atletas mentorados
                 case 'A':
-                    apoio_ao_atleta_db.py.adicionar_atleta(connection)  # Adiciona um atleta
+                    apoio_ao_atleta_db.adicionar_atleta(connection)  # Adiciona um atleta
                 case 'O':
-                    apoio_ao_atleta_db.py.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
+                    apoio_ao_atleta_db.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
                 case 'V':
-                    apoio_ao_atleta_db.py.todas_as_alergias(connection)  # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
+                    apoio_ao_atleta_db.todas_as_alergias(connection)  # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
                 case 'Q':
                     break  # Sai do loop
                 case _:  # Caso padrão para entradas inválidas
