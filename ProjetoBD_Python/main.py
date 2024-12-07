@@ -27,7 +27,7 @@ def main():
                 case 'O':
                     apoio_ao_atleta_db.objetivos_atleta(connection)  # Exibe objetivos de desenvolvimento
                 case 'V':
-                    apoio_ao_atleta_db.todas_as_alergias(connection)  # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
+                    apoio_ao_atleta_db.alergias_semelhantes(connection)  # Verifica se algum atleta possui todas as alergias do atleta inserido pelo usuário
                 case 'Q':
                     break  # Sai do loop
                 case _:  # Caso padrão para entradas inválidas
